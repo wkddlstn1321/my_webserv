@@ -98,6 +98,7 @@ Request::Request(const Request &request)
 
 void Request::setStartLine(std::string startLine) {
     std::vector<std::string> data = Split2(startLine, std::string(" "));
+    // std::cout << "\n&=========&\n method " << data[0] << "\n&=========&\n";
     if (!data[0].compare("GET"))
         _method = GET;
     else if (!data[0].compare("POST"))

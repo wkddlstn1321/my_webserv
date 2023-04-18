@@ -7,14 +7,15 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include "Config.hpp"
 
 // test를 위해 crlf를 아래와 같이 정의했습니다. 이후에 "\r\n"으로 수정 바랍니다.
 #ifndef CRLF
-#define CRLF "\\r\n"
+#define CRLF "\r\n"
 #endif
 
 enum Method { GET = 1, POST = 2, DELETE = 3 };
-class ServerBlock {};
+// class ServerBlock {};
 
 class Request {
   private:

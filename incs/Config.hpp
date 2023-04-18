@@ -55,7 +55,7 @@ class Config {
     void  LocationEssentialCheck(ServerBlock& curServerBlockObject, LocationBlock& curLocationBlock);
 
   public:
-    typedef typename std::vector<ServerBlock>::iterator iterator;
+    typedef std::vector<ServerBlock>::iterator iterator;
     std::vector<ServerBlock> _ServerBlockObject;
     Config(std::string filename);
     ~Config();
