@@ -10,10 +10,11 @@ EventLoop::EventLoop(Config &con) {
 }
 
 void EventLoop::EventHandler() {
-    int servcnt = this->_ChangeList.size(); // this->추가?
+    int servcnt = _ChangeList.size(); // this->추가?
     struct kevent evntLst[8];
     struct kevent *curEvnts;
     int newEvnts;
+    std::vector<std::pair<int, int> > check; ////
     while (1) {
         newEvnts = kevent(_kqFd, &_ChangeList[0], _ChangeList.size(), evntLst,
                           8, NULL);
@@ -37,6 +38,10 @@ void EventLoop::EventHandler() {
                         EV_SET(&tmpEvnt, clnt_fd, EVFILT_READ,
                                EV_ADD | EV_ENABLE, 0, 0, curEvnts->udata);
                         _ChangeList.push_back(tmpEvnt);
+                        std::pair<int, int> temp_pair; ////
+                        temp_pair.first = clnt_fd;     ////
+                        temp_pair.second = 0;          ////
+                        check.push_back(temp_pair);    ////
                     } else
                         std::cout << "이상한 연결 요청" << std::endl;
                 } else {
@@ -47,7 +52,23 @@ void EventLoop::EventHandler() {
             } else if (curEvnts->filter == EVFILT_WRITE) {
                 std::cout << "클라이언트(" << curEvnts->ident
                           << ")에게 응답을 보냄" << std::endl;
-                MakeResponse(curEvnts);
+                /////////nhwang
+                std::vector<std::pair<int, int> >::iterator it;
+                it = check.begin();
+                while (it != check.end()) {
+                    if (it->first == (int)curEvnts->ident)
+                        break;
+                }
+                if (it->second == 1) {
+                    struct kevent tmpEvnt;
+                    EV_SET(&tmpEvnt, curEvnts->ident, EVFILT_WRITE, EV_DELETE,
+                           0, 0, curEvnts->udata);
+                    _ChangeList.push_back(tmpEvnt);
+                } else {
+                    MakeResponse(curEvnts);
+                    it->second = 1;
+                }
+                /////////nhwang
             } else {
                 std::cout << curEvnts->ident << "번 넌 뭐냐?" << std::endl;
             }
@@ -146,20 +167,20 @@ void EventLoop::MakeResponse(struct kevent *curEvnts) {
         std::string response_str = response_header + response_body;
         int response_size = response_str.size();
         while (response_size > 0) {
-            int res =
-                send(curEvnts->ident, response_str.c_str(), response_size, 0);
+            int res;
+            res = send(curEvnts->ident, response_str.c_str(),
+                       response_str.size(), 0);
             if (res == -1) {
-                std::cout << "Error: " << strerror(errno) << '\n';
                 std::cout << "break" << std::endl;
-                // return;
-            } else {
-                std::cout << "response size : " << response_size << std::endl;
-                std::cout << "res : " << res << std::endl;
-                response_size -= res;
+                break;
             }
+            std::cout << "Error: " << strerror(errno) << '\n';
+            std::cout << "response size : " << response_size << std::endl;
+            std::cout << "res : " << res << std::endl;
+            response_size -= res; ///
         }
-        // std::cout << response_str.rfind("\r\n\r\n") << std::endl;
-        // std::cout << response_str.size() - 4 << std::endl;
+        std::cout << response_str.rfind("\r\n\r\n") << std::endl;
+        std::cout << response_str.size() - 4 << std::endl;
         // if (response_str.rfind("\r\n\r\n") == response_str.size() - 4) {
         //     std::cout << "Event Delete" << std::endl;
         //     struct kevent tmpEvnt;
@@ -170,10 +191,10 @@ void EventLoop::MakeResponse(struct kevent *curEvnts) {
     }
     delete (this->_cli[curEvnts->ident]);
     this->_cli.erase(curEvnts->ident);
-    struct kevent tmpEvnt;
-    EV_SET(&tmpEvnt, curEvnts->ident, EVFILT_WRITE, EV_DELETE, 0, 0,
-           curEvnts->udata);
-    _ChangeList.push_back(tmpEvnt);
+    // struct kevent tmpEvnt;
+    // EV_SET(&tmpEvnt, curEvnts->ident, EVFILT_WRITE, EV_DELETE, 0, 0,
+    //        curEvnts->udata);
+    //_ChangeList.push_back(tmpEvnt);
 }
 
 EventLoop::EventLoop() {}
