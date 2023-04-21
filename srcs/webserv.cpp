@@ -10,7 +10,7 @@
 void sigint_handler(int signum) {
     std::cout << "\nReceived SIGINT signal, closing all socket and exiting..." << std::endl;
     int i = 3;
-    while (close(i) != -1)
+    while (i != 20)
         i++;
     exit(signum);
 }

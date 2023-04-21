@@ -50,6 +50,11 @@ Config::Config(std::string filename) {
 				}
 			}
 			if (token == "}") {
+				if (curServerBlockObject.GetLocation().size() == 0)
+				{
+					std::cout << "non 존재 LocationBlock err" << std::endl;
+					exit(1);
+				}
 				serverStack.pop_back();
 				_ServerBlockObject.push_back(curServerBlockObject);
 				continue;

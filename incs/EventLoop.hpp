@@ -14,6 +14,7 @@ private:
 	int	_kqFd;
 	std::vector<struct kevent> _ChangeList;
 	std::map<int, Request *> _cli;
+	std::map<int, std::string> _response;
 	EventLoop();
 
 public:
@@ -22,6 +23,7 @@ public:
 	void	EventHandler();
 	void	HandleRequest(struct kevent *curEvnts);
 	void	MakeResponse(struct kevent *curEvnts);
+	void	SendResponse(struct kevent *curEvnts);
 };
 
 #endif
