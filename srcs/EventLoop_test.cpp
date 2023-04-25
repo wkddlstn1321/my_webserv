@@ -200,3 +200,38 @@ void EventLoop::MakeResponse(struct kevent *curEvnts) {
 EventLoop::EventLoop() {}
 
 EventLoop::~EventLoop() {}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// int total_bytes_sent = 0;
+	// int remaining_bytes =
+	//     response_str.size(); // data_size는 전송할 데이터의 크기
+
+	// while (remaining_bytes > 0) {
+	//     int bytes_sent =
+	//         send(curEvnts->ident, response_str.c_str() + total_bytes_sent,
+	//              remaining_bytes, MSG_NOSIGNAL);
+
+	//     if (bytes_sent == -1) {
+	//         // if (errno == EAGAIN || errno == EWOULDBLOCK) {
+	//             // 출력 버퍼가 가득 차서 전송할 수 없는 경우
+	//             continue;
+	//         // } else {
+	//         //     // 다른 에러가 발생한 경우
+	//         //     perror("send() failed");
+	//         //     break;
+	//         // }
+	//     } else if (bytes_sent == 0) {
+	//         // 연결이 끊어진 경우
+	//         std::cout << "dis connect 발생 " << std::endl;
+	//         break;
+	//     }
+
+	//     total_bytes_sent += bytes_sent;
+	//     remaining_bytes -= bytes_sent;
+	// }
+	// if (remaining_bytes > 0) {
+	//     std::cout << "noooooooooooo" << std::endl;
+	//     return;
+	//     // 전송되지 않은 데이터가 있는 경우, 다시 보내기 처리
+	// }
+	/////////////////////////////////////////////////////////////////////////////////

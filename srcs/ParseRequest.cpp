@@ -20,7 +20,10 @@ Request *ParseRequest(int fd, std::map<int, Request *> &clients,
 
     if (ss.str() == "") {
         if (close(fd) < 0)
+        {
+            delete(clients[fd]);
             std::cout << "close" << fd << "fail" << std::endl;
+        }
         else
             std::cout << "close " << fd << " success⭕️" << std::endl;
         return NULL;

@@ -8,13 +8,13 @@ Socket::Socket(Config& con)
 	it = con._ServerBlockObject.begin();
 	its = con._ServerBlockObject.end();
 	for ( ; it != its ; it++) {
-		ServerInit(it);
+		ServerInit(it, con);
 	}
 }
 
 Socket::~Socket() {}
 
-void Socket::ServerInit(Config::iterator it)
+void Socket::ServerInit(Config::iterator it, Config &con)
 {
 	int servSock;
 	struct sockaddr_in serv_addr;
@@ -35,8 +35,15 @@ void Socket::ServerInit(Config::iterator it)
 
 	if (bind(servSock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
 	{
-		if (errno == EADDRINUSE)
-			std::cout << "duplicate bind err" << std::endl;
+		if (errno == EADDRINUSE) {
+			std::cout << "duplicate port err" << std::endl;
+			Config::iterator begin = con._ServerBlockObject.begin();
+			for ( ; it != begin ; it--) {
+				close(it->GetPort());
+			}
+			close(it->GetPort());
+			exit(80);
+		}
 		else
 			std::cout << "bind err" << std::endl;
 	}

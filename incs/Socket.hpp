@@ -16,7 +16,7 @@ class Socket
 private:
 	std::vector<struct kevent> _changList;
 	/* data */
-	void ServerInit(Config::iterator it);
+	void ServerInit(Config::iterator it, Config& con);
 	void AddSocketEvent(int servSock, ServerBlock& ServerBlock);
 
 public:
