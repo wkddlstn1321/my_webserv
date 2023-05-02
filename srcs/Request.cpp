@@ -151,3 +151,13 @@ void Request::SetBody(std::vector<std::string>::iterator	iter) {
         GetStream() << *iter;
 	}
 }
+
+
+void Request::SetRequestMessages(std::string reque_str) {
+    _request_msg = reque_str;
+}
+
+std::string Request::GetRequestMessages() {
+    return (_request_msg);
+}
+
